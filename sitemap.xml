@@ -7,8 +7,8 @@
             http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
-       <loc>http://www.auratkartalla.com/</loc>
-       <lastmod>2014-01-18T13:37:58+00:00</lastmod>
+       <loc>https://dev.turku.fi/maintenance-map/</loc>
+       <lastmod>2017-04-18T13:37:58+00:00</lastmod>
        <changefreq>monthly</changefreq>
        <priority>1.0000</priority>
   </url>
