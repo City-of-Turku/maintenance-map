@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <title>Maintenance map - Turun katujen kunnossapitotyöt visualisoituna</title>
+  <meta name="description" content="Kunnossapitovälineiden liikkeet kartalla." />
+  <meta name="rating" content="Safe For Kids" />
+  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="noodp" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Turun katujen kunnossapitotyöt visualisoituna" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dev.turku.fi/maintenance-map/" />
+  <meta property="og:image" content="https://dev.turku.fi/maintenance-map/screenshot.png" />
+  <meta property="og:site_name" content="Turun katujen kunnossapitotyöt visualisoituna" />
+  <meta property="og:description" content="Kunnossapitovälineiden liikkeet kartalla." />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Turun katujen kunnossapitotyöt visualisoituna" />
+  <meta name="twitter:description" content="Kunnossapitovälineiden liikkeet kartalla." />
+  <meta name="twitter:image" content="https://dev.turku.fi/maintenance-map/screenshot.png" />
+
+  <link href="https://fonts.googleapis.com/css?family=Exo+2:400,800" rel="stylesheet" type="text/css" />
+  <link href="css/main.css" rel="stylesheet" type="text/css" />
+
+  <link rel="shortcut icon" href="images/favicons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="images/favicons/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="images/favicons/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="images/favicons/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="images/favicons/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon" sizes="60x60" href="images/favicons/apple-touch-icon-60x60.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="images/favicons/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="images/favicons/apple-touch-icon-76x76.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="images/favicons/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="images/favicons/favicon-196x196.png" sizes="196x196" />
+  <link rel="icon" type="image/png" href="images/favicons/favicon-160x160.png" sizes="160x160" />
+  <link rel="icon" type="image/png" href="images/favicons/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/png" href="images/favicons/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="images/favicons/favicon-16x16.png" sizes="16x16" />
+  <meta name="msapplication-TileColor" content="#da532c" />
+  <meta name="msapplication-TileImage" content="images/favicons/mstile-144x144.png" />
+  <meta name="msapplication-square70x70logo" content="images/favicons/mstile-70x70.png" />
+  <meta name="msapplication-square144x144logo" content="images/favicons/mstile-144x144.png" />
+  <meta name="msapplication-square150x150logo" content="images/favicons/mstile-150x150.png" />
+  <meta name="msapplication-square310x310logo" content="images/favicons/mstile-310x310.png" />
+  <meta name="msapplication-wide310x150logo" content="images/favicons/mstile-310x150.png" />
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <style>#info, #visualization, #info-button, #visualization-button {display: none !important} #upgrade-browser {display: block !important; margin: 5% auto; width: 50%; line-height: 24px; font-size: 18px}</style>
+    <div id="upgrade-browser">Tämä sivusto ei valitettavasti toimi Internet Explorerin versioilla 8 tai 9. Suosittelen sinua päivittämään selaimesi. Selaimen päivittäminen parantaa hurjasti sinun nettikokemusta ja tietoturvaa!<br/><br/><a href="https://www.google.com/intl/fi/chrome/browser/">Google Chromen voit ladata tästä.</a></div>
+  <![endif]-->
+  <a href="https://plus.google.com/100723818959801774365" rel="publisher" style="position:absolute;z-index:-1">Google+</a>
+  <div id="map-canvas"></div>
+  <div id="info">
+    <div id="info-button">info</div>
+    <div class="expanded">
+      <div class="info-container" role="contentinfo">
+        <button id="info-close">Sulje</button>
+        <h1>Maintenance map</h1>
+        <p>
+        </p>
+        <p>
+          Tietoja on vain osasta katujen kunnossapitoon osallistuvista vekottimista.
+        </p>
+        <p class="copyright">
+          Palvelu perustuu Sampsa Kurosen <a href='http://www.auratkartalla.com/'>Aurat kartalla</a>-palveluun.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="visualization-button">&equiv;</div>
+  <div id="visualization">
+    <button id="visualization-close">Sulje</button>
+    <h2 class="no-top-margin">Näytä katujen kunnossapito ajalta</h2>
+    <div id="load-spinner">
+      <div id="followingBallsG_1" class="followingBallsG"></div>
+      <div id="followingBallsG_2" class="followingBallsG"></div>
+      <div id="followingBallsG_3" class="followingBallsG"></div>
+      <div id="followingBallsG_4" class="followingBallsG"></div>
+    </div>
+    <nav id="time-filters">
+      <ol role="navigation">
+        <li data-hours="1">1 tunti</li>
+        <li data-hours="2">2 tuntia</li>
+        <li data-hours="8" class="active">8 tuntia</li>
+        <li data-hours="12">12 tuntia</li>
+        <li data-hours="24">24 tuntia</li>
+        <li data-hours="72">3 vuorokautta</li>
+        <li data-hours="168">1 viikko</li>
+      </ol>
+    </nav>
+    <div id="notification"></div>
+    <h2>Viivojen värien merkitykset</h2>
+    <ul class="legend">
+      <li class="hi" data-job="hi" data-selected="true">Hiekoitus</li>
+      <li class="su" data-job="su" data-selected="true">Suolaus</li>
+      <li class="au" data-job="au" data-selected="true">Auraus</li>
+      <li class="other" data-job="nt, hs, ln" data-selected="true">Muu</li>
+    </ul>
+    <hr style="color:white">
+    <ul class="legend">
+      <li class="hj" data-job="hj" data-selected="true">Harjaus</li>
+      <li class="hn" data-job="hn" data-selected="true">Hiekanpoisto</li>
+      <li class="hs" data-job="hs" data-selected="true">Höyläys</li>
+      <li class="pe" data-job="pe" data-selected="true">Pesu</li>
+    </ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="js/lib/lodash.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKlRrbI8wmbZH3nR-RD27GlnqhFaZU1DM&sensor=false&libraries=geometry"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

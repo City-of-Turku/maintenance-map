@@ -2,17 +2,17 @@
 (function() {
   var activePolylines, addMapLine, clearMap, createIndividualPlowTrail, createPlowsOnMap, displayNotification, getActivePlows, getPlowJobColor, initializeGoogleMaps, map, populateMap, snowAPI;
 
-  snowAPI = "http://dev.hel.fi/aura/v1/snowplow/";
+  snowAPI = "https://api.turku.fi/street-maintenance/v1/vehicles/";
 
   activePolylines = [];
 
   map = null;
 
   initializeGoogleMaps = function(callback, time) {
-    var helsinkiCenter, mapOptions, styles;
-    helsinkiCenter = new google.maps.LatLng(60.193084, 24.940338);
+    var mapOptions, styles, turkuCenter;
+    turkuCenter = new google.maps.LatLng(60.4629060928519, 22.259694757206415);
     mapOptions = {
-      center: helsinkiCenter,
+      center: turkuCenter,
       zoom: 13,
       disableDefaultUI: true,
       zoomControl: true,
@@ -93,39 +93,60 @@
   getPlowJobColor = function(job) {
     switch (job) {
       case "kv":
-        return "#84ff00";
+        return "#8dd3c7";
       case "au":
-        return "#f2c12e";
+        return "#ffffb3";
       case "su":
-        return "#d93425";
+        return "#bebada";
       case "hi":
+        return "#fb8072";
+      case "hj":
         return "#ffffff";
       case "hn":
-        return "#00a59b";
+        return "#fdb462";
       case "hs":
-        return "#910202";
+        return "#b3de69";
       case "ps":
-        return "#970899";
+        return "#ccebc5";
       case "pe":
-        return "#132bbe";
+        return "#aaaaff";
       default:
-        return "#6c00ff";
+        return "#6cf0ff";
     }
   };
 
   addMapLine = function(plowData, plowJobId) {
-    var plowTrailColor, polyline, polylinePath;
+    var arr, distance, ind, opacity, plowTrailColor, polyline, polylinePath, strokeWeight, _i, _ref;
     plowTrailColor = getPlowJobColor(plowJobId);
     polylinePath = _.reduce(plowData, (function(accu, x) {
       accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]));
       return accu;
     }), []);
+    strokeWeight = 2;
+    opacity = 0.8;
+    arr = [];
+    for (ind = _i = 0, _ref = plowData.length - 1; _i < _ref; ind = _i += 1) {
+      arr.push(polylinePath[ind]);
+      distance = google.maps.geometry.spherical.computeDistanceBetween(polylinePath[ind], polylinePath[ind + 1]);
+      if (200 < distance) {
+        polyline = new google.maps.Polyline({
+          path: arr,
+          geodesic: true,
+          strokeColor: plowTrailColor,
+          strokeWeight: strokeWeight,
+          strokeOpacity: opacity
+        });
+        activePolylines.push(polyline);
+        polyline.setMap(map);
+        arr = [];
+      }
+    }
     polyline = new google.maps.Polyline({
-      path: polylinePath,
+      path: arr,
       geodesic: true,
       strokeColor: plowTrailColor,
-      strokeWeight: 1.5,
-      strokeOpacity: 0.6
+      strokeWeight: strokeWeight,
+      strokeOpacity: opacity
     });
     activePolylines.push(polyline);
     return polyline.setMap(map);
@@ -216,9 +237,5 @@
       return $("#visualization").toggleClass("on");
     });
   });
-
-  console.log("\n _________                            .__                                 \n /   _____/ ____   ______  _  ________ |  |   ______  _  ________          \n \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          \n /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           \n /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          \n \\/     \\/ .__           |__|     .__  .__             \\/   .___    \n ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    \n Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     \n Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     \n 2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     \n \\/           \\/              \\/    \\/     \\/     \n https://github.com/sampsakuronen/snowplow-visualization      \n");
-
-  console.log("It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/");
 
 }).call(this);

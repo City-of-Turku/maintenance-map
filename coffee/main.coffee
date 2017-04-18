@@ -1,12 +1,12 @@
-snowAPI = "http://dev.hel.fi/aura/v1/snowplow/"
+snowAPI = "https://api.turku.fi/street-maintenance/v1/vehicles/"
 activePolylines = []
 map = null
 
 initializeGoogleMaps = (callback, time)->
-  helsinkiCenter = new google.maps.LatLng(60.193084, 24.940338)
+  turkuCenter = new google.maps.LatLng(60.4629060928519, 22.259694757206415)
 
   mapOptions =
-    center: helsinkiCenter
+    center: turkuCenter
     zoom: 13
     disableDefaultUI: true
     zoomControl: true
@@ -55,15 +55,16 @@ initializeGoogleMaps = (callback, time)->
 
 getPlowJobColor = (job)->
   switch job
-    when "kv" then "#84ff00"
-    when "au" then "#f2c12e"
-    when "su" then "#d93425"
-    when "hi" then "#ffffff"
-    when "hn" then "#00a59b"
-    when "hs" then "#910202"
-    when "ps" then "#970899"
-    when "pe" then "#132bbe"
-    else "#6c00ff"
+    when "kv" then "#8dd3c7"
+    when "au" then "#ffffb3"
+    when "su" then "#bebada"
+    when "hi" then "#fb8072"
+    when "hj" then "#ffffff"
+    when "hn" then "#fdb462"
+    when "hs" then "#b3de69"
+    when "ps" then "#ccebc5"
+    when "pe" then "#aaaaff"
+    else "#6cf0ff"
 
 addMapLine = (plowData, plowJobId)->
   plowTrailColor = getPlowJobColor(plowJobId)
@@ -71,14 +72,30 @@ addMapLine = (plowData, plowJobId)->
     accu.push(new google.maps.LatLng(x.coords[1], x.coords[0]))
     accu), [])
 
+  strokeWeight = 2
+  opacity = 0.8
+  arr = []
+  for ind in [0...plowData.length-1] by 1
+    arr.push(polylinePath[ind])
+    distance=google.maps.geometry.spherical.computeDistanceBetween(polylinePath[ind],polylinePath[ind+1])
+    if 200<distance
+      polyline = new google.maps.Polyline(
+        path: arr
+        geodesic: true
+        strokeColor: plowTrailColor
+        strokeWeight: strokeWeight
+        strokeOpacity: opacity
+      )
+      activePolylines.push(polyline)
+      polyline.setMap map
+      arr = []
   polyline = new google.maps.Polyline(
-    path: polylinePath
+    path: arr
     geodesic: true
     strokeColor: plowTrailColor
-    strokeWeight: 1.5
-    strokeOpacity: 0.6
+    strokeWeight: strokeWeight
+    strokeOpacity: opacity
   )
-
   activePolylines.push(polyline)
   polyline.setMap map
 
@@ -154,27 +171,3 @@ $(document).ready ->
     e.preventDefault()
     $("#visualization").toggleClass("on")
   )
-
-
-
-
-
-
-console.log("
-.................................................................................\n
-.                                                                               .\n
-.      _________                            .__                                 .\n
-.     /   _____/ ____   ______  _  ________ |  |   ______  _  ________          .\n
-.     \\_____  \\ /    \\ /  _ \\ \\/ \\/ /\\____ \\|  |  /  _ \\ \\/ \\/ /  ___/          .\n
-.     /        \\   |  (  <_> )     / |  |_> >  |_(  <_> )     /\\___ \\           .\n
-.    /_______  /___|  /\\____/ \\/\\_/  |   __/|____/\\____/ \\/\\_//____  >          .\n
-.            \\/     \\/ .__           |__|     .__  .__             \\/   .___    .\n
-.                ___  _|__| ________ _______  |  | |__|_______ ____   __| _/    .\n
-.        Sampsa  \\  \\/ /  |/  ___/  |  \\__  \\ |  | |  \\___   // __ \\ / __ |     .\n
-.        Kuronen  \\   /|  |\\___ \\|  |  // __ \\|  |_|  |/    /\\  ___// /_/ |     .\n
-.            2014  \\_/ |__/____  >____/(____  /____/__/_____ \\\\___  >____ |     .\n
-.                              \\/           \\/              \\/    \\/     \\/     .\n
-.                  https://github.com/sampsakuronen/snowplow-visualization      .\n
-.                                                                               .\n
-.................................................................................\n")
-console.log("It is nice to see that you want to know how something is made. We are looking for guys like you: http://reaktor.fi/careers/")
